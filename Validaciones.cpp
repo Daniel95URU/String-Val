@@ -6,17 +6,14 @@
 
 using namespace std;
 
-// Función para verificar si es un dígito
 bool esDigito(const string& cadena) {
     return cadena.size() == 1 && isdigit(cadena[0]);
 }
 
-// Función para verificar si es una letra
 bool esLetra(const string& cadena) {
     return cadena.size() == 1 && isalpha(cadena[0]);
 }
 
-// Función para verificar si es una palabra (letra+)
 bool esPalabra(const string& cadena) {
     for (size_t i = 0; i < cadena.size(); ++i) {
         if (!isalpha(cadena[i])) {
@@ -26,7 +23,6 @@ bool esPalabra(const string& cadena) {
     return !cadena.empty();
 }
 
-// Función para verificar si es un número entero (digito+)
 bool esNumeroEntero(const string& cadena) {
     for (size_t i = 0; i < cadena.size(); ++i) {
         if (!isdigit(cadena[i])) {
@@ -36,7 +32,6 @@ bool esNumeroEntero(const string& cadena) {
     return !cadena.empty();
 }
 
-// Función para verificar si es un número real (digito+ . digito+)
 bool esNumeroReal(const string& cadena) {
     size_t punto = cadena.find('.');
     if (punto == string::npos) {
@@ -49,32 +44,68 @@ bool esNumeroReal(const string& cadena) {
            esNumeroEntero(parteEntera) && esNumeroEntero(parteDecimal);
 }
 
-// Nueva función para verificar si es un identificador (letra seguida de paréntesis con letras/números)
+/*
+-----------------------------------------------------------------------------------------
+CADENA QUE VALIDA UN IDENTIFICADOR DE LA FORMA a(cd) descartada en clase por el profesor.
+----------------------------------------------------------------------------------------- 
+Nueva forma de identificador: 	(letra|'_')+=(digito|letra|'_')+ 
+	1. donde la expresiÃ³n de la izquierda no puede empezar por dÃ­gitos.
+	2. Pueden utilizarse '_' en ambos lados de la expresiÃ³n regular
+*/
+
+//bool esIdentificador(const string& cadena) {
+//    if (cadena.empty() || !isalpha(cadena[0])) {
+//        return false; // La cadena estÃ¡ vacÃ­a o no empieza con una letra
+//    }
+//    if (cadena.size() < 3 || cadena[1] != '(' || cadena[cadena.size() - 1] != ')') {
+//        return false; // Debe tener al menos "a()" y parÃ©ntesis vÃ¡lidos
+//    }
+//    for (size_t i = 2; i < cadena.size() - 1; ++i) {
+//        if (!isalnum(cadena[i])) { // Solo permite letras o nÃºmeros dentro de los parÃ©ntesis
+//            return false;
+//        }
+//    }
+//    return true;
+//}  				
+
+// FunciÃ³n para verificar si es un identificador letra|palabra = (letra|digito|_)+
 bool esIdentificador(const string& cadena) {
-    if (cadena.empty() || !isalpha(cadena[0])) {
-        return false; // La cadena está vacía o no empieza con una letra
+    size_t igual = cadena.find('=');
+    if (igual == string::npos) {
+        return false; // No contiene un signo igual
     }
-    if (cadena.size() < 3 || cadena[1] != '(' || cadena[cadena.size() - 1] != ')') {
-        return false; // Debe tener al menos "a()" y paréntesis válidos
-    }
-    for (size_t i = 2; i < cadena.size() - 1; ++i) {
-        if (!isalnum(cadena[i])) { // Solo permite letras o números dentro de los paréntesis
-            return false;
+
+    string izquierda = cadena.substr(0, igual);
+    string derecha = cadena.substr(igual + 1);
+
+    // Verifica que la parte izquierda no estÃ© vacÃ­a y no comience con un dÃ­gito 
+    bool identificador = !izquierda.empty() && !isdigit(izquierda[0]);
+    for (size_t i = 0; i < izquierda.size() && identificador; ++i) {
+        if (!isalnum(izquierda[i]) && izquierda[i] != '_') { 
+            identificador = false;
         }
     }
-    return true;
+    // Verifica que la parte derecha sea una combinaciÃ³n de letras, dÃ­gitos y '_'
+    bool valor = !derecha.empty();
+    for (size_t i = 0; i < derecha.size() && valor; ++i) {
+        if (!isalnum(derecha[i]) && derecha[i] != '_') { 
+            valor = false;
+        }
+    }
+
+    return identificador && valor;
 }
 
-// Función para verificar si es un operador
 bool esOperador(const string& cadena) {
     return cadena == "=" || cadena == "+" || cadena == "-" ||
            cadena == "*" || cadena == "/" || cadena == "%";
 }
 
-// Función principal de validación
+// FunciÃ³n principal de validaciÃ³n
 void validarCadena(const string& cadena) {
     if (esDigito(cadena)) {
-        cout << "Es un dígito." << endl;
+    	system("color f0");
+        cout << "Es un dÃ­gito." << endl;
     } else if (esLetra(cadena)) {
     	system("color f0");
         cout << "Es una letra." << endl;
@@ -83,10 +114,10 @@ void validarCadena(const string& cadena) {
         cout << "Es una palabra." << endl;
     } else if (esNumeroEntero(cadena)) {
     	system("color f0");
-        cout << "Es un número entero." << endl;
+        cout << "Es un nÃºmero entero." << endl;
     } else if (esNumeroReal(cadena)) {
     	system("color f0");
-        cout << "Es un número real." << endl;
+        cout << "Es un nÃºmero real." << endl;
     } else if (esIdentificador(cadena)) {
     	system("color f0");
         cout << "Es un identificador." << endl;
@@ -95,20 +126,30 @@ void validarCadena(const string& cadena) {
         cout << "Es un operador." << endl;
     } else {
     	system("color 40");
-        cout << "Error :( La cadena no cumple con ninguna expresión regular válida." << endl;
+        cout << "\t\t\n\t\t\t\t\t\tError :( \n\n\n\t\t\t\t" << endl;
+        cout << "\n\n\n\t\t\tLa cadena no cumple con ninguna de las expresiones regulares que se piden.\n\n\n\n" << endl;
+        exit(-1);
     }
 }
 
 int main() {
-	setlocale(LC_ALL, "spanish");
+    setlocale(LC_ALL, "spanish");
     string entrada;
-    cout << "Ingrese una cadena para validar: ";
-    getline(cin, entrada);
-	Beep(400, 400);
-   	Beep(450, 450);
-   	Beep(350, 350);
-    validarCadena(entrada);
 
+    while (true) { 
+        cout << "Ingrese una cadena para validar o el simbolo '|' para salir: \n";
+        getline(cin, entrada);
+
+        if (entrada == "|") {
+            cout << "Saliendo del programa..." << endl;
+            break; 
+        }
+
+        Beep(400, 400);
+        validarCadena(entrada);
+        Beep(450, 450);
+    }
+
+    system("pause");
     return 0;
 }
-
