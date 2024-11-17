@@ -12,7 +12,7 @@ Identificador = (letra|'_')+ = (digito | letra | '_') +
 operador = (=|+|-|*|/|%)  
 Notas: el programa debe ser capaz de validar cualquier cadena de caracteres que corresponda a las expresiones regulares mostradas, de no corresponder, lanzar error.  
 
-[file](../Validaciones.cpp)
+[file](Validaciones.cpp)
 [Proyecto #1](https://github.com/Daniel95URU/String-Val "Proyecto #1")
 
 # **Tabla de Datos**
